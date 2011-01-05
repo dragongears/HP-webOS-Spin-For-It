@@ -40,12 +40,17 @@ SpinAssistant.prototype.setup = function() {
   );
 
 	/* add event handlers to listen to events from widgets */
+	Mojo.Event.listen(this.controller.window, 'resize', this.handleWindowResize.bindAsEventListener(this), false);
 	Mojo.Event.listen(this.controller.get('SpinButton'), Mojo.Event.tap, this.handleSpinButtonTap.bind(this));
 	Mojo.Event.listen(this.controller.get("SpinnerSelect"), Mojo.Event.propertyChange, this.handleSelectChange.bind(this));
+
 	this.spinButtonModel.disabled = true;
 	this.controller.modelChanged(this.spinButtonModel);
-	this.sfi.spinner.spin(this.handleSpinEnd.bind(this));
-	Mojo.Event.listen(this.controller.window, 'resize', this.handleWindowResize.bindAsEventListener(this), false);
+
+	this.spinAngle = Math.floor(Math.random()*360);
+	this.spinPointer = $('pointer');
+	this.handleSpin(this.spinAngle);
+	this.spin();
 };
 
 SpinAssistant.prototype.activate = function(event) {
@@ -67,19 +72,36 @@ SpinAssistant.prototype.cleanup = function(event) {
 };
 
 SpinAssistant.prototype.handleSpinButtonTap = function(event){
-	this.sfi.spinner.spin(this.handleSpinEnd.bind(this));
 	this.spinButtonModel.disabled = true;
 	this.controller.modelChanged(this.spinButtonModel);
+	this.spin();
+};
+
+SpinAssistant.prototype.spin = function(){
+	this.spinnerAnimator = Mojo.Animation.animateValue(Mojo.Animation.queueForElement(this.spinPointer),
+		"bezier", this.handleSpin.bind(this), {
+			from: 0,
+			to: 3600 + (Math.floor(Math.random()*360)),
+			currentValue: this.spinAngle,
+			curve:'ease-out',
+			duration: 5,
+			onComplete:this.handleSpinEnd.bind(this)
+	});
+};
+
+SpinAssistant.prototype.handleSpin = function(num){
+	this.spinAngle = num;
+	this.spinPointer.setStyle({'-webkit-transform': 'rotate('+ (num) +'deg)'});
 };
 
 SpinAssistant.prototype.handleSpinEnd = function(){
+	this.spinAngle = this.spinAngle % 360;
 	this.spinButtonModel.disabled = false;
 	this.controller.modelChanged(this.spinButtonModel);
 };
 
 SpinAssistant.prototype.handleSelectChange = function(event){
-	var pointer = $('pointer');
-	pointer.setAttribute("class", this.selectModel.value);
+	this.spinPointer.setAttribute("class", this.selectModel.value);
 };
 
 SpinAssistant.prototype.handleWindowResize = function(event){

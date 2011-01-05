@@ -4,7 +4,5 @@
 	{
 		"scenes": "spin",
 		"source": "app/assistants/spin-assistant.js"
-	},
-	{"source": "app/lib/spinner.js"}
-
+	}
 ]

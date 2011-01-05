@@ -18,7 +18,6 @@ function AppAssistant (appController) {
 	this.sfi.versionString = "1.0.0";
 
 	// Global Data Structures
-	this.sfi.spinner = new Spinner();
 
 	// Persistent Globals - will be saved across app launches
 
