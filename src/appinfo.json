@@ -1,0 +1,20 @@
+{
+	"id": "com.dragongears.spinner",
+	"version": "1.0.0",
+	"vendor": "Dragongears",
+	"vendorurl": "http://dragongears.com",
+	"type": "web",
+	"main": "index.html",
+	"title": "Spin For It",
+	"icon": "icon.png",
+	"smallicon": "icon32x32.png",
+	"splashicon": "icon256x256.png",
+	"splashBackground": "images/splash-background.png",
+	"copyright": "&copy; Copyright 2011 Arthur J. Dahm III",
+	"support": {
+		"email": {
+			"address": "support@dragongears.com",
+			"subject": "Support"
+		}
+	 }
+}

@@ -1,0 +1,10 @@
+[
+	{"source": "app/assistants/app-assistant.js"},
+	{"source": "app/assistants/stage-assistant.js"},
+	{
+		"scenes": "spin",
+		"source": "app/assistants/spin-assistant.js"
+	},
+	{"source": "app/lib/spinner.js"}
+
+]

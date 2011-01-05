@@ -1,0 +1,37 @@
+#pointer {
+	width:256px;
+	height:256px;
+	-webkit-transform: rotate(45deg);
+	margin:20px 0 40px 16px;
+}
+
+.spinner {	background-image:url('../images/spinner.png');
+}
+
+.hand {	background-image:url('../images/hand.png');
+}
+
+.bottle {	background-image:url('../images/bottle.png');
+}
+
+.arrow {	background-image:url('../images/arrow.png');
+}
+
+#spinner-container {
+	position:relative;
+}
+
+#SpinnerSelectGroup {
+	position:absolute;
+	left:0px;
+	bottom:80px;
+	width:240px;
+}
+
+#SpinButton {
+	position:absolute;
+	left:0px;
+	bottom:26px;
+	width:290px;
+}
+
