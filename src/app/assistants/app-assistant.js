@@ -2,20 +2,29 @@
 //    GLOBALS
 //  ---------------------------------------------------------------
 
-// Spinner namespace
+SFI = {};
 
-// Constants
+SFI.cookie = new Mojo.Model.Cookie('SpinForIt');
 
-// Global Data Structures
+SFI.saveCookie = function() {
+	var options = {
+		'type': SFI.type
+	};
+	SFI.cookie.put(options);
+};
 
-// Persistent Globals - will be saved across app launches
+SFI.loadCookie = function() {
+	var cookieData = SFI.cookie.get() || {};
+
+	SFI.type = cookieData.type || "hand";
+};
 
 function AppAssistant (appController) {
   this.sfi = {};
 
 	// Constants
 	this.sfi.MainStageName = "spinnerStage";
-	this.sfi.versionString = "1.0.0";
+	this.sfi.versionString = "1.1.0";
 
 	// Global Data Structures
 
@@ -41,5 +50,26 @@ AppAssistant.prototype.setup = function() {
 
 AppAssistant.prototype.cleanup = function() {
 	//this.setPrefs();
+};
+
+// -----------------------------------------
+// handleCommand - called to handle app menu selections
+//
+AppAssistant.prototype.handleCommand = function(event) {
+	var stageController = this.controller.getActiveStageController();
+	var currentScene = stageController.activeScene();
+
+	if (event.type == Mojo.Event.command) {
+		switch (event.command) {
+
+			//			case "doPrefs":
+			//				stageController.pushScene("preferences");
+			//			break;
+
+			case "doHelp":
+				stageController.pushAppSupportInfoScene();
+				break;
+		}
+	}
 };
 

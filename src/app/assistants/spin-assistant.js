@@ -6,9 +6,28 @@ function SpinAssistant() {
 }
 
 SpinAssistant.prototype.setup = function() {
+	SFI.loadCookie();
+
+	this.MenuAttr = {omitDefaultItems: true};
+
+	this.MenuModel = {
+		visible: true,
+		items: [
+			Mojo.Menu.editItem,
+			//{label: "Preferences...", command: "doPrefs"},
+			{label: "Help...", command: "doHelp"}
+		]
+	};
+
+	this.controller.setupWidget(Mojo.Menu.appMenu, this.MenuAttr, this.MenuModel);
+
 	/* this function is for setup tasks that have to happen when the scene is first created */
 	var appController = Mojo.Controller.getAppController();
 	this.sfi = appController.assistant.sfi;
+
+	this.spinAngle = Math.floor(Math.random()*360);
+	this.spinPointer = $('pointer');
+	this.spinPointer.setAttribute("class", SFI.type);
 
 	/* use Mojo.View.render to render view templates and add them to the scene, if needed */
 	var scrollHeight = (this.controller.window.innerHeight) + 'px';
@@ -26,20 +45,21 @@ SpinAssistant.prototype.setup = function() {
 
 	this.controller.setupWidget("SpinnerSelect",
 		this.selectAttributes = {
-			label: "Spinner style",
+			label: "Pointer",
 			choices: [
-				{label: "Hand", value: 'hand'},
 				{label: "Arrow", value: 'arrow'},
 				{label: "Bottle", value: 'bottle'},
+				{label: "Hand", value: 'hand'},
 				{label: "Spinner", value: 'spinner'}
 			]},
 		this.selectModel = {
-			value: 'hand',
+			value: SFI.type,
 			disabled: false
 		}
   );
 
 	/* add event handlers to listen to events from widgets */
+	Mojo.Event.listen(this.controller.get('pointer'), Mojo.Event.flick, this.handleSpinnerFlick.bind(this));
 	Mojo.Event.listen(this.controller.window, 'resize', this.handleWindowResize.bindAsEventListener(this), false);
 	Mojo.Event.listen(this.controller.get('SpinButton'), Mojo.Event.tap, this.handleSpinButtonTap.bind(this));
 	Mojo.Event.listen(this.controller.get("SpinnerSelect"), Mojo.Event.propertyChange, this.handleSelectChange.bind(this));
@@ -47,8 +67,6 @@ SpinAssistant.prototype.setup = function() {
 	this.spinButtonModel.disabled = true;
 	this.controller.modelChanged(this.spinButtonModel);
 
-	this.spinAngle = Math.floor(Math.random()*360);
-	this.spinPointer = $('pointer');
 	this.handleSpin(this.spinAngle);
 	this.spin();
 };
@@ -61,14 +79,22 @@ SpinAssistant.prototype.activate = function(event) {
 SpinAssistant.prototype.deactivate = function(event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
 	   this scene is popped or another scene is pushed on top */
+	SFI.saveCookie();
 };
 
 SpinAssistant.prototype.cleanup = function(event) {
 	/* this function should do any cleanup needed before the scene is destroyed as 
 	   a result of being popped off the scene stack */
+	this.controller.stopListening(this.controller.get('pointer'), Mojo.Event.flick, this.handleSpinnerFlick);
 	this.controller.stopListening(this.controller.get('SpinButton'), Mojo.Event.tap, this.handleSpinButtonTap);
 	this.controller.stopListening(this.controller.get('SpinnerSelect'), Mojo.Event.propertyChange, this.handleSelectChange);
 	this.controller.stopListening(this.controller.window, 'resize', this.handleWindowResize);
+};
+
+SpinAssistant.prototype.handleSpinnerFlick = function(event){
+	this.spinButtonModel.disabled = true;
+	this.controller.modelChanged(this.spinButtonModel);
+	this.spin();
 };
 
 SpinAssistant.prototype.handleSpinButtonTap = function(event){
@@ -101,7 +127,8 @@ SpinAssistant.prototype.handleSpinEnd = function(){
 };
 
 SpinAssistant.prototype.handleSelectChange = function(event){
-	this.spinPointer.setAttribute("class", this.selectModel.value);
+	SFI.type = this.selectModel.value;
+	this.spinPointer.setAttribute("class", SFI.type);
 };
 
 SpinAssistant.prototype.handleWindowResize = function(event){
