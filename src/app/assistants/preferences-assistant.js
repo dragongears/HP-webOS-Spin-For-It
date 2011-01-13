@@ -14,8 +14,8 @@ PreferencesAssistant.prototype.setup = function() {
 	this.controller.setupWidget("StartSelect",
 		this.startSelectAttributes = {
 			choices: [
-				{label: "Button Tap", value: 't'},
-				{label: "Flick", value: 'f'},
+				{label: "Button Tap Only", value: 't'},
+				{label: "Flick Only", value: 'f'},
 				{label: "Button Tap or Flick", value: 'tf'}
 			]},
 		this.startSelectModel = {
