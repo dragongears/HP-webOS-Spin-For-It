@@ -14,7 +14,7 @@ SpinAssistant.prototype.setup = function() {
 		visible: true,
 		items: [
 			Mojo.Menu.editItem,
-			//{label: "Preferences...", command: "doPrefs"},
+			{label: "Preferences...", command: "doPrefs"},
 			{label: "Help...", command: "doHelp"}
 		]
 	};
@@ -28,6 +28,12 @@ SpinAssistant.prototype.setup = function() {
 	this.spinAngle = Math.floor(Math.random()*360);
 	this.spinPointer = $('pointer');
 	this.spinPointer.setAttribute("class", SFI.type);
+
+	if (SFI.start.indexOf('t') == -1) {
+		$('spin').setAttribute('class', 'nobutton');
+	} else {
+		$('spin').removeAttribute('class');
+	}
 
 	/* use Mojo.View.render to render view templates and add them to the scene, if needed */
 	var scrollHeight = (this.controller.window.innerHeight) + 'px';
@@ -64,11 +70,12 @@ SpinAssistant.prototype.setup = function() {
 	Mojo.Event.listen(this.controller.get('SpinButton'), Mojo.Event.tap, this.handleSpinButtonTap.bind(this));
 	Mojo.Event.listen(this.controller.get("SpinnerSelect"), Mojo.Event.propertyChange, this.handleSelectChange.bind(this));
 
-	this.spinButtonModel.disabled = true;
-	this.controller.modelChanged(this.spinButtonModel);
-
 	this.handleSpin(this.spinAngle);
-	this.spin();
+	var self = this;
+	setTimeout(function() {
+		self.spin();
+	}, 1000);
+	//this.spin();
 };
 
 SpinAssistant.prototype.activate = function(event) {
@@ -80,6 +87,7 @@ SpinAssistant.prototype.deactivate = function(event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
 	   this scene is popped or another scene is pushed on top */
 	SFI.saveCookie();
+	Mojo.Controller.stageController.setWindowProperties({blockScreenTimeout: false});
 };
 
 SpinAssistant.prototype.cleanup = function(event) {
@@ -92,25 +100,28 @@ SpinAssistant.prototype.cleanup = function(event) {
 };
 
 SpinAssistant.prototype.handleSpinnerFlick = function(event){
-	this.spinButtonModel.disabled = true;
-	this.controller.modelChanged(this.spinButtonModel);
-	this.spin();
+	if (SFI.start.indexOf('f') != -1) {
+		this.spinButtonModel.disabled = true;
+		this.controller.modelChanged(this.spinButtonModel);
+		this.spin();
+	}
 };
 
 SpinAssistant.prototype.handleSpinButtonTap = function(event){
-	this.spinButtonModel.disabled = true;
-	this.controller.modelChanged(this.spinButtonModel);
 	this.spin();
 };
 
 SpinAssistant.prototype.spin = function(){
+	Mojo.Controller.stageController.setWindowProperties({blockScreenTimeout: true});
+	this.spinButtonModel.disabled = true;
+	this.controller.modelChanged(this.spinButtonModel);
 	this.spinnerAnimator = Mojo.Animation.animateValue(Mojo.Animation.queueForElement(this.spinPointer),
 		"bezier", this.handleSpin.bind(this), {
 			from: 0,
-			to: 3600 + (Math.floor(Math.random()*360)),
+			to: SFI.times[SFI.time].rotation + (Math.floor(Math.random()*360)),
 			currentValue: this.spinAngle,
 			curve:'ease-out',
-			duration: 5,
+			duration: SFI.times[SFI.time].duration,
 			onComplete:this.handleSpinEnd.bind(this)
 	});
 };
@@ -124,6 +135,7 @@ SpinAssistant.prototype.handleSpinEnd = function(){
 	this.spinAngle = this.spinAngle % 360;
 	this.spinButtonModel.disabled = false;
 	this.controller.modelChanged(this.spinButtonModel);
+	Mojo.Controller.stageController.setWindowProperties({blockScreenTimeout: false});
 };
 
 SpinAssistant.prototype.handleSelectChange = function(event){

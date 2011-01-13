@@ -4,11 +4,20 @@
 
 SFI = {};
 
+SFI.times = [
+	{'rotation': 720, 'duration': 1.5},
+	{'rotation': 3600, 'duration': 5},
+	{'rotation': 9600, 'duration': 15},
+	{'rotation': 19200, 'duration': 25}
+];
+
 SFI.cookie = new Mojo.Model.Cookie('SpinForIt');
 
 SFI.saveCookie = function() {
 	var options = {
-		'type': SFI.type
+		'type': SFI.type,
+		'start': SFI.start,
+		'time': SFI.time
 	};
 	SFI.cookie.put(options);
 };
@@ -16,7 +25,13 @@ SFI.saveCookie = function() {
 SFI.loadCookie = function() {
 	var cookieData = SFI.cookie.get() || {};
 
-	SFI.type = cookieData.type || "hand";
+	SFI.type = cookieData.type || 'hand';
+	if (typeof cookieData.time == 'undefined') {
+		SFI.time = 1;
+	} else {
+		SFI.time = cookieData.time;
+	}
+	SFI.start = cookieData.start || 't';
 };
 
 function AppAssistant (appController) {
@@ -62,9 +77,9 @@ AppAssistant.prototype.handleCommand = function(event) {
 	if (event.type == Mojo.Event.command) {
 		switch (event.command) {
 
-			//			case "doPrefs":
-			//				stageController.pushScene("preferences");
-			//			break;
+			case "doPrefs":
+				stageController.pushScene("preferences");
+			break;
 
 			case "doHelp":
 				stageController.pushAppSupportInfoScene();
