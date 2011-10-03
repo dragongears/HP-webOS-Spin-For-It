@@ -1,6 +1,6 @@
 {
 	"id": "com.dragongears.spinforit",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"vendor": "Dragongears",
 	"vendorurl": "http://dragongears.com",
 	"type": "web",
@@ -11,7 +11,7 @@
 	"splashicon": "icon256x256.png",
 	"splashBackground": "images/splash-background.png",
 	"copyright": "&copy; Copyright 2011 Arthur J. Dahm III",
-	"keywords": ["spin", "spinner", "decision", "arrow", "pointer", "choose", "select", "point"],
+	"keywords": ["dragongears", "spin", "spinner", "decision", "arrow", "pointer", "choose", "select", "point"],
 	"support": {
 		"email": {
 			"address": "support@dragongears.com",
